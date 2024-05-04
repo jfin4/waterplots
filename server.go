@@ -14,7 +14,7 @@ type Station struct {
 	// utility of tags described in json.Marshal docs
 	// in short, they provide for customization of json encoding
 	// in this case, json object member names
-	StationCode string  `json:"station_code"`
+	StationCode string  `json:"code"`
 	Latitude    float64 `json:"latitude"`
 	Longitude   float64 `json:"longitude"`
 }
