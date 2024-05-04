@@ -1,0 +1,31 @@
+html, body {
+    height: 100%; 
+    margin: 0;
+    padding: 0;
+}
+
+#mapid {
+    position: relative; 
+    width: 100vw; 
+    height: 100vh; 
+}
+
+.marker-cluster-small,  .marker-cluster-small div,
+.marker-cluster-medium, .marker-cluster-medium div,
+.marker-cluster-large,  .marker-cluster-large div {
+    background-color: rgba(70, 130, 180, 0.6);
+    color: white;
+}
+
+.github-link {
+    position: absolute; 
+    top: 20px; 
+    right: 20px; 
+    opacity: 0.7; 
+    z-index: 1000; 
+}
+
+.github-icon {
+    width: 40px; 
+}
+
