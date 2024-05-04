@@ -1,4 +1,5 @@
 /data
 /notes
+/nohup.out
 *.exe
 *.db
