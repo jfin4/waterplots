@@ -1,5 +1,6 @@
 /data
 /notes
 /nohup.out
-*.exe
-*.db
+/server
+/server.exe
+/wq_data.db

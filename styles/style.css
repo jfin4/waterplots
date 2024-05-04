@@ -45,7 +45,7 @@ html, body {
 }
 
 #popup-title {
-    /* display: block; /1* Set display to block to center the element *1/ */
+    display: block;
     text-align: center; /* Center the text */
     font-weight: bold; /* Make the text bold */
 }
