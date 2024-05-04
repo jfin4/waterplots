@@ -19,12 +19,13 @@ type Station struct {
 	Longitude   float64 `json:"longitude"`
 }
 
-
 func main() {
 	http.HandleFunc("/stations", stationsHandler)
 	http.Handle("/", http.FileServer(http.Dir("./")))
-	log.Println("Server starting on http://localhost:8080...")
-	log.Fatal(http.ListenAndServe(":8080", nil))
+	log.Fatal(http.ListenAndServeTLS(":443",
+		"/etc/letsencrypt/live/cadataviewer.com/fullchain.pem",
+		"/etc/letsencrypt/live/cadataviewer.com/privkey.pem",
+		nil))
 }
 
 func stationsHandler(w http.ResponseWriter, r *http.Request) {
