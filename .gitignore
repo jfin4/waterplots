@@ -1,6 +1,5 @@
-/data
+*.tsv
+*.db
+*.out
+server
 /notes
-/nohup.out
-/server
-/server.exe
-/wq_data.db
