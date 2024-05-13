@@ -9,6 +9,9 @@
    id="svg1"
    inkscape:version="1.3.2 (091e20e, 2023-11-25, custom)"
    sodipodi:docname="favicon.svg"
+   inkscape:export-filename="apple-touch-icon.png"
+   inkscape:export-xdpi="17.280001"
+   inkscape:export-ydpi="17.280001"
    xmlns:inkscape="http://www.inkscape.org/namespaces/inkscape"
    xmlns:sodipodi="http://sodipodi.sourceforge.net/DTD/sodipodi-0.dtd"
    xmlns:xlink="http://www.w3.org/1999/xlink"
@@ -25,14 +28,15 @@
      inkscape:deskcolor="#d1d1d1"
      inkscape:document-units="px"
      inkscape:zoom="1.4142136"
-     inkscape:cx="366.28131"
-     inkscape:cy="493.20698"
+     inkscape:cx="366.2813"
+     inkscape:cy="493.20697"
      inkscape:window-width="3840"
      inkscape:window-height="2054"
      inkscape:window-x="-11"
      inkscape:window-y="-11"
      inkscape:window-maximized="1"
-     inkscape:current-layer="layer1" />
+     inkscape:current-layer="layer1"
+     showgrid="false" />
   <defs
      id="defs1">
     <color-profile
@@ -47,9 +51,10 @@
     <path
        id="path6"
        style="fill:#4682b4;fill-opacity:1;stroke:#ffffff;stroke-width:0;stroke-dasharray:none;stroke-opacity:1"
-       inkscape:transform-center-y="-13.229012"
-       d="m 171.97939,13.229166 -22.91336,39.687085 -22.77662,39.686537 v 0 c -4.69266,8.031372 -7.18535,17.157792 -7.22691,26.459532 0,29.22515 23.69166,52.91685 52.91689,52.91685 29.22516,0 52.91688,-23.6917 52.91687,-52.91685 -0.008,-9.2908 -2.45601,-18.41649 -7.10656,-26.459532 v 0 L 194.89277,52.916251 Z"
-       sodipodi:nodetypes="ccccccccccc" />
+       inkscape:transform-center-y="-11.024177"
+       d="m 171.979,26.458333 -19.09447,33.07257 -18.98052,33.072113 v 0 c -3.91055,6.692809 -5.98779,14.298154 -6.02242,22.049614 0,24.35429 19.74305,44.09737 44.09741,44.09737 24.3543,0 44.09739,-19.74308 44.09739,-44.09737 -0.007,-7.74234 -2.04668,-15.34708 -5.92214,-22.049614 v 0 L 191.07348,59.530903 Z"
+       sodipodi:nodetypes="ccccccccccc"
+       inkscape:transform-center-x="-1.6666721e-06" />
     <path
        style="fill:none;stroke:#4682b4;stroke-width:26.4583;stroke-dasharray:none;stroke-opacity:1"
        d="M 66.145832,0 V 264.58333"
