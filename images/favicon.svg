@@ -1,26 +1,63 @@
-<?xml version="1.0" encoding="UTF-8" standalone="no" ?>
-<!DOCTYPE svg PUBLIC "-//W3C//DTD SVG 1.1//EN" "http://www.w3.org/Graphics/SVG/1.1/DTD/svg11.dtd">
-<svg xmlns="http://www.w3.org/2000/svg" xmlns:xlink="http://www.w3.org/1999/xlink" version="1.1" width="1080" height="1080" viewBox="0 0 1080 1080" xml:space="preserve">
-<desc>Created with Fabric.js 5.2.4</desc>
-<defs>
-</defs>
-<rect x="0" y="0" width="100%" height="100%" fill="transparent"></rect>
-<g transform="matrix(1 0 0 1 540 540)" id="6d30c7bc-47fe-4f37-99cc-ea0b16f7a1e6"  >
-</g>
-<g transform="matrix(1 0 0 1 540 540)" id="aad9df9e-3320-409f-b432-6787c07976f3"  >
-<rect style="stroke: none; stroke-width: 1; stroke-dasharray: none; stroke-linecap: butt; stroke-dashoffset: 0; stroke-linejoin: miter; stroke-miterlimit: 4; fill: rgb(70,130,180); fill-rule: nonzero; opacity: 1;" vector-effect="non-scaling-stroke"  x="-540" y="-540" rx="0" ry="0" width="1080" height="1080" />
-</g>
-<g transform="matrix(1 0 0 1 540 540)"  >
-<rect style="stroke: none; stroke-width: 1; stroke-dasharray: none; stroke-linecap: butt; stroke-dashoffset: 0; stroke-linejoin: miter; stroke-miterlimit: 4; fill: rgb(255,255,255); fill-rule: nonzero; opacity: 1; visibility: hidden;" vector-effect="non-scaling-stroke"  x="-540" y="-540" rx="0" ry="0" width="1080" height="1080" />
-</g>
-<g transform="matrix(1.69 0 0 1.69 540 540)"  >
-<path style="stroke: rgb(255,255,255); stroke-width: 50; stroke-dasharray: none; stroke-linecap: round; stroke-dashoffset: 0; stroke-linejoin: round; stroke-miterlimit: 4; fill: none; fill-rule: nonzero; opacity: 1;" vector-effect="non-scaling-stroke"  transform=" translate(-256.01, -256)" d="M 255.66 112 C 177.72 112 97.77000000000001 157.11 34.829999999999984 247.33 C 31.156133961436893 252.6541501700191 31.049584385250956 259.66669079529356 34.55999999999998 265.1 C 82.92 340.8 161.8 400 255.66 400 C 348.5 400 429 340.62 477.45 264.75 C 480.87399061794133 259.42997426906004 480.87399061794133 252.60002573093993 477.45 247.28 C 428.89 172.28 347.8 112 255.66 112 Z" stroke-linecap="round" />
-</g>
-<g transform="matrix(1.19 0 0 1.19 538.86 539.83)"  >
-<path style="stroke: rgb(255,255,255); stroke-width: 50; stroke-dasharray: none; stroke-linecap: butt; stroke-dashoffset: 0; stroke-linejoin: miter; stroke-miterlimit: 10; fill: none; fill-rule: nonzero; opacity: 1;" vector-effect="non-scaling-stroke"  transform=" translate(-256, -259.96)" d="M 400 320 C 400 408.37 344.37 464 256 464 C 167.63 464 112 408.37 112 320 C 112 225.17000000000002 215.23000000000002 97.15 246.89 60.120000000000005 C 249.16981957763954 57.45750561748816 252.49979620514074 55.92491992271541 256.005 55.92491992271541 C 259.51020379485925 55.92491992271541 262.84018042236045 57.45750561748816 265.12 60.120000000000005 C 296.77 97.15 400 225.17 400 320 Z" stroke-linecap="round" />
-</g>
-<g transform="matrix(0 0 0 0 145.83 113.99)"  >
-<g style=""   >
-</g>
-</g>
+<?xml version="1.0" encoding="UTF-8" standalone="no"?>
+<!-- Created with Inkscape (http://www.inkscape.org/) -->
+
+<svg
+   width="1000"
+   height="1000"
+   viewBox="0 0 264.58333 264.58333"
+   version="1.1"
+   id="svg1"
+   inkscape:version="1.3.2 (091e20e, 2023-11-25, custom)"
+   sodipodi:docname="favicon.svg"
+   xmlns:inkscape="http://www.inkscape.org/namespaces/inkscape"
+   xmlns:sodipodi="http://sodipodi.sourceforge.net/DTD/sodipodi-0.dtd"
+   xmlns:xlink="http://www.w3.org/1999/xlink"
+   xmlns="http://www.w3.org/2000/svg"
+   xmlns:svg="http://www.w3.org/2000/svg">
+  <sodipodi:namedview
+     id="namedview1"
+     pagecolor="#ffffff"
+     bordercolor="#000000"
+     borderopacity="0.25"
+     inkscape:showpageshadow="2"
+     inkscape:pageopacity="0.0"
+     inkscape:pagecheckerboard="0"
+     inkscape:deskcolor="#d1d1d1"
+     inkscape:document-units="px"
+     inkscape:zoom="1.4142136"
+     inkscape:cx="366.28131"
+     inkscape:cy="493.20698"
+     inkscape:window-width="3840"
+     inkscape:window-height="2054"
+     inkscape:window-x="-11"
+     inkscape:window-y="-11"
+     inkscape:window-maximized="1"
+     inkscape:current-layer="layer1" />
+  <defs
+     id="defs1">
+    <color-profile
+       name="Adobe-RGB-1998"
+       xlink:href="../../../../../WINDOWS/system32/spool/drivers/color/AdobeRGB1998.icc"
+       id="color-profile1" />
+  </defs>
+  <g
+     inkscape:label="Layer 1"
+     inkscape:groupmode="layer"
+     id="layer1">
+    <path
+       id="path6"
+       style="fill:#4682b4;fill-opacity:1;stroke:#ffffff;stroke-width:0;stroke-dasharray:none;stroke-opacity:1"
+       inkscape:transform-center-y="-13.229012"
+       d="m 171.97939,13.229166 -22.91336,39.687085 -22.77662,39.686537 v 0 c -4.69266,8.031372 -7.18535,17.157792 -7.22691,26.459532 0,29.22515 23.69166,52.91685 52.91689,52.91685 29.22516,0 52.91688,-23.6917 52.91687,-52.91685 -0.008,-9.2908 -2.45601,-18.41649 -7.10656,-26.459532 v 0 L 194.89277,52.916251 Z"
+       sodipodi:nodetypes="ccccccccccc" />
+    <path
+       style="fill:none;stroke:#4682b4;stroke-width:26.4583;stroke-dasharray:none;stroke-opacity:1"
+       d="M 66.145832,0 V 264.58333"
+       id="path7" />
+    <path
+       style="fill:none;stroke:#4682b4;stroke-width:26.4583;stroke-dasharray:none;stroke-opacity:1"
+       d="M 264.58333,198.43748 H 168.0474 0"
+       id="path7-5"
+       sodipodi:nodetypes="ccc" />
+  </g>
 </svg>
