@@ -24,12 +24,12 @@ func main() {
     http.HandleFunc("/stations", stationsHandler)
 
     // // local:
-	log.Fatal(http.ListenAndServe("localhost:8080", nil))
-    // // production:
-	// log.Fatal(http.ListenAndServeTLS(":443",
-		// "/etc/letsencrypt/live/cadataviewer.com/fullchain.pem",
-		// "/etc/letsencrypt/live/cadataviewer.com/privkey.pem",
-		// nil))
+    // log.Fatal(http.ListenAndServe("localhost:8080", nil))
+    // production:
+    log.Fatal(http.ListenAndServeTLS(":443",
+    "/etc/letsencrypt/live/waterplots.com/fullchain.pem",
+    "/etc/letsencrypt/live/waterplots.com/privkey.pem",
+    nil))
 }
 
 func stationsHandler(w http.ResponseWriter, r *http.Request) {
