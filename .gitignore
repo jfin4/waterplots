@@ -1,5 +1,7 @@
 *.tsv
 *.db
 *.out
+go.mod
+go.sum
 server
 /notes
