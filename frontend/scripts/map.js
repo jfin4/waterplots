@@ -21,9 +21,9 @@ map.on('click', function () {
 function createCustomIcon(station) {
         return L.divIcon({
                     className: 'custom-icon',
-                    html: '<div class="icon-content">' + station.code + '</div><div class="pointer"></div>',
-                    iconSize: [2, 30],
-                    iconAnchor: [1, 30]
+                    html: '<div class="icon-content"><div>' + station.code + '</div></div><div class="pointer"></div>',
+                    iconSize: [0, 40],
+                    iconAnchor: [0, 40]
                 });
 }
 

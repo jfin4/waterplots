@@ -1,3 +1,8 @@
+:root {
+  --bg: rgba(70, 130, 180, 0.6);
+  --fg: white;
+}
+
 html, body {
     height: 100%; 
     margin: 0;
@@ -14,8 +19,8 @@ html, body {
 .marker-cluster-small,  .marker-cluster-small div,
 .marker-cluster-medium, .marker-cluster-medium div,
 .marker-cluster-large,  .marker-cluster-large div {
-    background-color: rgba(70, 130, 180, 0.6);
-    color: white;
+    background-color: var(--bg);
+    color: var(--fg);
 }
 
 .github-link {
@@ -38,7 +43,7 @@ html, body {
     left: 50%;
     transform: translate(-50%, -50%);
     z-index: 1000;
-    background-color: white;
+    background-color: var(--fg);
     border-radius: 10px;
     padding: 20px;
     display: none;
@@ -58,24 +63,32 @@ html, body {
 /* } */
 
 .custom-icon {
+    position: absolute;
     text-align: center;
-    position: relative;
     line-height: 20px;
     display: flex;
     flex-direction: column;
+    /* border-left: 1px solid red; */
+    /* border-right: 1px solid red; */
     align-items: center;
-    width: auto; /* Ensuring it fits the content plus padding */
 }
 
 .icon-content {
+    position: relative;
+    padding: 5px;
+    color: var(--fg);
+    background: var(--bg);
+    white-space: nowrap;
+    border-radius: 20px;
+    /* font-weight: bold; */
+    font-size: 12px;
+}
+
+.icon-content div {
     padding-left: 5px;
     padding-right: 5px;
-    color: white;
-    background: steelblue;
-    white-space: nowrap;
-    border-radius: 5px;
-    font-weight: bold;
-    font-size: 12px;
+    background: var(--bg);
+    border-radius: 20px;
 }
 
 .pointer {
@@ -84,8 +97,6 @@ html, body {
     height: 0;
     border-left: 5px solid transparent; /* Increased the size for better visibility */
     border-right: 5px solid transparent;
-    border-top: 10px solid steelblue;
+    border-top: 10px solid var(--bg);
     top: 0;
-    left: 50%;
-    transform: translateX(-50%); /* Centering the triangle perfectly */
 }
