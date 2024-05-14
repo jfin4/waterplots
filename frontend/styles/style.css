@@ -70,9 +70,9 @@ html, body {
 .icon-content {
     padding-left: 5px;
     padding-right: 5px;
-    background: white;
+    color: white;
+    background: steelblue;
     white-space: nowrap;
-    border: 1px solid black;
     border-radius: 5px;
     font-weight: bold;
     font-size: 12px;
@@ -82,27 +82,10 @@ html, body {
     position: relative;
     width: 0; /* Essential for not offsetting the pointer */
     height: 0;
-}
-
-.pointer:before {
-    content: "";
     border-left: 5px solid transparent; /* Increased the size for better visibility */
     border-right: 5px solid transparent;
-    border-top: 10px solid black;
-    position: absolute;
+    border-top: 10px solid steelblue;
     top: 0;
     left: 50%;
     transform: translateX(-50%); /* Centering the triangle perfectly */
 }
-
-.pointer:after {
-    content: "";
-    border-left: 5px solid transparent; /* slightly less to create a border effect */
-    border-right: 5px solid transparent;
-    border-top: 10px solid white; /* white border mimic */
-    position: absolute;
-    top: -2px; /* Adjust to overlap the larger black border */
-    left: 50%;
-    transform: translateX(-50%); /* Aligning with the :before element */
-}
-
