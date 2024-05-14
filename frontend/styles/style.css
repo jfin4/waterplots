@@ -7,7 +7,8 @@ html, body {
     height: 100%; 
     margin: 0;
     padding: 0;
-    font-family: "Source Sans 3", sans-serif;
+    font-family: "Source Sans 3";
+    font-size: 12px;
 }
 
 #mapid {
@@ -21,6 +22,11 @@ html, body {
 .marker-cluster-large,  .marker-cluster-large div {
     background-color: var(--bg);
     color: var(--fg);
+}
+
+.marker-cluster,  .marker-cluster div {
+    font-family: "Source Sans 3";
+    font-size: 1rem;
 }
 
 .github-link {
@@ -80,8 +86,9 @@ html, body {
     background: var(--bg);
     white-space: nowrap;
     border-radius: 20px;
+    font-family: "Source Sans 3";
+    font-size: 1rem;
     /* font-weight: bold; */
-    font-size: 12px;
 }
 
 .icon-content div {
