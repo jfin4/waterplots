@@ -24,7 +24,7 @@ html, body {
     color: var(--fg);
 }
 
-.marker-cluster,  .marker-cluster div {
+.marker-cluster span {
     font-family: "Source Sans 3";
     font-size: 1rem;
 }
@@ -69,41 +69,40 @@ html, body {
 /* } */
 
 .custom-icon {
-    position: absolute;
-    text-align: center;
-    line-height: 20px;
-    display: flex;
-    flex-direction: column;
     /* border-left: 1px solid red; */
     /* border-right: 1px solid red; */
     align-items: center;
+    display: flex;
+    flex-direction: column;
+    font-family: "Source Sans 3";
+    font-size: 1rem;
+    line-height: 20px;
+    position: absolute;
+    text-align: center;
+    white-space: nowrap;
 }
 
 .icon-content {
-    position: relative;
-    padding: 5px;
-    color: var(--fg);
     background: var(--bg);
-    white-space: nowrap;
-    border-radius: 20px;
-    font-family: "Source Sans 3";
-    font-size: 1rem;
-    /* font-weight: bold; */
+    border-radius: 15px;
+    color: var(--fg);
+    padding: 5px;
+    position: relative;
 }
 
 .icon-content div {
+    background: var(--bg);
+    border-radius: 10px;
     padding-left: 5px;
     padding-right: 5px;
-    background: var(--bg);
-    border-radius: 20px;
 }
 
 .pointer {
-    position: relative;
-    width: 0; /* Essential for not offsetting the pointer */
-    height: 0;
     border-left: 5px solid transparent; /* Increased the size for better visibility */
     border-right: 5px solid transparent;
     border-top: 10px solid var(--bg);
+    height: 0;
+    position: relative;
     top: 0;
+    width: 0; /* Essential for not offsetting the pointer */
 }
