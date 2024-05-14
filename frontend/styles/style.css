@@ -61,12 +61,14 @@ html, body {
     font-weight: bold; /* Make the text bold */
 }
 
-/* #popup .close-btn { */
-/*     position: absolute; */
-/*     top: 10px; */
-/*     right: 10px; */
-/*     cursor: pointer; */
-/* } */
+#popup .close-btn {
+    position: absolute;
+    color: red;
+    top: 10px;
+    font-size: 15px;
+    right: 10px;
+    cursor: default;
+}
 
 .custom-icon {
     /* border-left: 1px solid red; */
