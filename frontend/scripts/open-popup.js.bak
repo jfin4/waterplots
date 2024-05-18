@@ -1,0 +1,120 @@
+let currentStation = null; // To store the current station
+
+// Event Listeners
+initializeStationMarkers();
+initializeResizeListener();
+setupCloseButton();
+
+// Function to initialize station markers with click event handlers
+function initializeStationMarkers() {
+    console.log(window.stationMarkers); // Debug line to check access
+    window.stationMarkers.forEach(({ station, marker }) => {
+        marker.on('click', () => handleMarkerClick(station));
+    });
+}
+
+// Handle Marker Click Event
+function handleMarkerClick(station) {
+    openPopup(station);
+    fetchStationData(station);
+}
+
+// Open Popup
+function openPopup(station) {
+    currentStation = station; // Store the current station in a variable for reference
+    const title = document.getElementById('title');
+    title.textContent = station.code;
+    const popup = document.getElementById('popup');
+    popup.style.display = 'flex';
+}
+
+// Fetch Station Data
+function fetchStationData(station) {
+    const url = `/station-data?code=${encodeURIComponent(station.code)}`;
+
+    fetch(url)
+        .then(response => response.json())
+        .then(data => {
+            console.log("Received data for station:", station.code, data);
+            drawPlot(data);
+        })
+        .catch(error => console.error('Error fetching station details:', error));
+}
+
+
+
+function setupCloseButton() {
+    const closeButton = document.querySelector('.close-button');
+    const popup = document.getElementById('popup');
+
+    closeButton.addEventListener('click', closePopup);
+}
+
+// Close Popup Handler
+function closePopup() {
+    const popup = document.getElementById('popup');
+    popup.style.display = 'none';
+}
+
+
+function drawPlot(data) {
+    const dates = data.map(d => new Date(d.date).toISOString());
+    const results = data.map(d => d.result);
+
+    console.log("Plotting data:", dates, results);
+
+    const trace1 = {
+        x: dates,
+        y: results,
+        marker: {
+            color: 'steelblue',
+            size: 8,
+            symbol: 'circle-open',
+            line: {
+                width: 2
+            }
+        },
+        mode: 'markers',
+        type: 'scatter',
+        name: 'Data Series 1' // Ensure trace name is set here
+    };
+
+    const layout = {
+        plot_bgcolor: '#eeeeee',
+        xaxis: { 
+            title: 'Date', 
+            gridcolor: 'white' 
+        },
+        yaxis: {
+            title: 'Result',
+            gridcolor: 'white',
+            zerolinecolor: 'white',
+            zerolinewidth: 4
+        },
+        margin: { 
+            l: 0, 
+            r: 0, 
+            b: 0, 
+            t: 0 },
+        showlegend: true
+    };
+
+    // Render Plot
+    Plotly.newPlot('plot', [trace1], layout, {
+        responsive: true,
+        displayModeBar: false,
+        scrollZoom: true
+    });
+}
+
+// Initialize Resize Listener
+function initializeResizeListener() {
+    window.addEventListener('resize', () => {
+        Plotly.Plots.resize('plot');
+    });
+}
+
+// Hide popup on map click
+window.map.on('click', () => {
+    document.getElementById('popup').style.display = 'none';
+});

@@ -1,6 +1,6 @@
 *.tsv
 *.db
-*.out
+nohup.out
 go.mod
 go.sum
 server

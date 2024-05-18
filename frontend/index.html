@@ -1,36 +1,63 @@
 <!DOCTYPE html>
 <html>
-	<head>
-		<meta charset="UTF-8">
-		<meta name="viewport" content="width=device-width, initial-scale=1.0">
-		<title>CA Waterplots</title>
-		<link rel="apple-touch-icon" sizes="180x180" href="./images/apple-touch-icon.png">
-		<link rel="icon" type="image/png" sizes="16x16" href="./images/favicon-16x16.png">
-		<link rel="icon" type="image/png" sizes="32x32" href="./images/favicon-32x32.png">
-		<link rel="manifest" href="/site.webmanifest">
-		<link rel="preconnect" href="https://fonts.googleapis.com">
-		<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
-		<link href="https://fonts.googleapis.com/css2?family=Source+Sans+3:ital,wght@0,200..900;1,200..900&display=swap" rel="stylesheet">
-		<link rel="stylesheet" href="https://unpkg.com/leaflet.markercluster/dist/MarkerCluster.Default.css" >
-		<link rel="stylesheet" href="https://unpkg.com/leaflet.markercluster/dist/MarkerCluster.css" >
-		<link rel="stylesheet" href="https://unpkg.com/leaflet/dist/leaflet.css" >
-        <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/5.15.4/css/all.min.css">
-		<link rel="stylesheet" href="./styles/style.css">
-	</head>
-	<body>
-		<div id="mapid"></div>
-		<a href="https://github.com/jfin4/cadataviewer" target="_blank" class="github-link">
-			<img src="./images/github-mark.png" alt="GitHub Repository" class="github-icon">
-		</a>
-		<div id="popup">
-            <i class="close-btn fa fa-times-circle"></i>
-			<div id="popup-content">
-				<h2 id="popup-title"></h2>
-				<!-- Your plot or interactive content goes here -->
-			</div>
-		</div>
-		<script src="https://unpkg.com/leaflet/dist/leaflet.js"></script>
-		<script src="https://unpkg.com/leaflet.markercluster/dist/leaflet.markercluster-src.js"></script>
-		<script src="./scripts/map.js"></script>
-	</body>
+    <head>
+        <meta charset="UTF-8">
+        <meta name="viewport" content="width=device-width, initial-scale=1.0">
+        <title>CA Waterplots</title>
+        <link rel="apple-touch-icon" sizes="180x180" href="./images/apple-touch-icon.png">
+        <link rel="icon" type="image/png" sizes="16x16" href="./images/favicon-16x16.png">
+        <link rel="icon" type="image/png" sizes="32x32" href="./images/favicon-32x32.png">
+        <link rel="manifest" href="/site.webmanifest">
+        <link rel="preconnect" href="https://fonts.googleapis.com">
+        <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+        <link href="https://fonts.googleapis.com/css2?family=Source+Sans+3:ital,wght@0,200..900;1,200..900&display=swap" rel="stylesheet">
+        <!-- <link rel="stylesheet" href="https://unpkg.com/leaflet.markercluster/dist/MarkerCluster.Default.css" > -->
+        <link rel="stylesheet" href="https://unpkg.com/leaflet.markercluster/dist/MarkerCluster.css" >
+        <link rel="stylesheet" href="https://unpkg.com/leaflet/dist/leaflet.css" >
+        <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.2/css/all.min.css">
+        <link rel="stylesheet" href="./styles/style.css">
+        <script src="https://unpkg.com/leaflet/dist/leaflet.js"></script>
+        <script src="https://unpkg.com/leaflet.markercluster/dist/leaflet.markercluster-src.js"></script>
+        <script src="https://cdn.plot.ly/plotly-latest.min.js"></script>
+        <script src="./scripts/script.js" defer></script>
+    </head>
+        <body>
+            <div id="mapid"></div>
+            <a href="https://github.com/jfin4/waterplots" target="_blank" id="github-link">
+                <img src="./images/github-mark.png" alt="GitHub Repository" id="github-icon">
+            </a>
+        <div id="popup">
+            <i class="close-button fa-solid fa-circle-xmark"></i>
+            <div id="title"></div>
+            <div id="popup-content">
+                <div id="plot"></div>
+                <div id="sidebar">
+                    <div class="sidebar-item">
+                        <div class="input-item">
+                            <i id="pollutant-dropdown-icon" class="input-icon fa-solid fa-chevron-down"></i>
+                            <input type="text" class="input-field" id="pollutant-input" readonly>
+                        </div>
+                        <p class="input-name">Pollutant</p>
+                    </div>
+                    <div class="sidebar-item">
+                        <div class="input-item">
+                            <i id="matrix-dropdown-icon" class="input-icon fa-solid fa-chevron-down"></i>
+                            <input type="text" class="input-field" id="matrix-input" readonly>
+                        </div>
+                        <p class="input-name">Matrix</p>
+                    </div>
+                    <!-- <div class="sidebar-item"> -->
+                    <!--     <div class="input-item"> -->
+                    <!--         <i id="color-by-dropdown-icon" class="input-icon fa-solid fa-chevron-down"></i> -->
+                    <!--         <input type="text" class="input-field" id="group-by-input" readonly> -->
+                    <!--     </div> -->
+                    <!--     <p class="input-name">Color by</p> -->
+                    <!-- </div> -->
+                </div>
+                <div id="matrix-menu" class="input-menu"></div>
+                <div id="pollutant-menu" class="input-menu"></div>
+                <!-- <div id="color-menu" class="input-menu"></div> -->
+            </div>
+        </div>
+        </body>
 </html>

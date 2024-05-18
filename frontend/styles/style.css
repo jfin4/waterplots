@@ -1,110 +1,175 @@
-:root {
-  --bg: rgba(70, 130, 180, 0.6);
-  --fg: white;
+/* steelblue: rgb(70, 130, 180); */
+
+* {
+    box-sizing: border-box;
+    font-family: "Source Sans 3";
 }
 
 html, body {
     height: 100%; 
     margin: 0;
     padding: 0;
-    font-family: "Source Sans 3";
     font-size: 12px;
+    box-sizing: border-box;
 }
+
 
 #mapid {
     position: relative; 
-    width: 100vw; 
-    height: 100vh; 
+    width: 100%; 
+    height: 100%; 
+	z-index: 0;
 }
 
-.marker-cluster-small,  .marker-cluster-small div,
-.marker-cluster-medium, .marker-cluster-medium div,
-.marker-cluster-large,  .marker-cluster-large div {
-    background-color: var(--bg);
-    color: var(--fg);
-}
-
-.marker-cluster span {
-    font-family: "Source Sans 3";
-    font-size: 1rem;
-}
-
-.github-link {
+#github-link {
     position: absolute; 
     top: 20px; 
     right: 20px; 
     opacity: 0.7; 
-    z-index: 1000; 
 }
 
-.github-icon {
-    width: 40px; 
+#github-icon {
+    width: 30px; 
+}
+
+.cluster-marker {
+    height: 30px !important;
+    width: 30px !important;
+    line-height: 30px !important;
+    border-radius: 15px !important;
+    background: rgba(70, 130, 180, 0.5);
+    color: white;
+    font-family: "Source Sans 3";
+    font-weight: bold;
+    font-size: 12px;
+    text-align: center;
+}
+
+/* custom leaflet marker */
+.station-marker {
+	position: absolute;
+    box-sizing: border-box;
+}
+
+.station-pointer {
+	position: absolute;
+	transform: translateX(-50%);
+	bottom: 0;
+	height: 0;
+	width: 0;
+	border-left: 6px solid transparent;
+	border-right: 6px solid transparent;
+	border-top: 10px solid steelblue; /* Change color if needed */
+}
+
+.station-label {
+	position: absolute;
+	transform: translateX(-50%);
+	bottom: 10px;
+	padding: 2px 5px;
+	background: steelblue;
+	color: white;
+	font-size: 12px;
+	font-weight: bold;
+	white-space: nowrap;
+}
+
+.close-button {
+    position: absolute;
+    color: pink;
+    top: 10px;
+    font-size: 20px;
+    right: 10px;
 }
 
 #popup {
-    position: fixed;
-    top: 50%;
-    height: 90%;
-    width: 90%;
-    left: 50%;
-    transform: translate(-50%, -50%);
-    z-index: 1000;
-    background-color: var(--fg);
-    border-radius: 10px;
-    padding: 20px;
-    display: none;
-}
-
-#popup-title {
-    display: block;
-    text-align: center; /* Center the text */
-    font-weight: bold; /* Make the text bold */
-}
-
-#popup .close-btn {
-    position: absolute;
-    color: red;
-    top: 10px;
-    font-size: 15px;
-    right: 10px;
-    cursor: default;
-}
-
-.custom-icon {
-    /* border-left: 1px solid red; */
-    /* border-right: 1px solid red; */
-    align-items: center;
-    display: flex;
+	position: fixed;
+	top: 50%;
+	left: 50%;
+	height: 90%;
+	width: 90%;
+	transform: translate(-50%, -50%);
+	background-color: white;
+	border: 2px solid #ccc;
+	padding: 50px;
+	display: none;
     flex-direction: column;
-    font-family: "Source Sans 3";
-    font-size: 1rem;
-    line-height: 20px;
-    position: absolute;
+    overflow: hidden;
+}
+
+#title {
+    font-weight: bold; /* Make the text bold */
+    font-size: 2rem;
     text-align: center;
-    white-space: nowrap;
+    font-family: "Source Sans 3";
+    margin-bottom: 50px;
 }
 
-.icon-content {
-    background: var(--bg);
-    border-radius: 15px;
-    color: var(--fg);
-    padding: 5px;
+#popup-content {
+    flex: 1;
     position: relative;
 }
 
-.icon-content div {
-    background: var(--bg);
-    border-radius: 10px;
-    padding-left: 5px;
-    padding-right: 5px;
+#plot {
+	height: 100%;
+    min-height: 250px;
 }
 
-.pointer {
-    border-left: 5px solid transparent; /* Increased the size for better visibility */
-    border-right: 5px solid transparent;
-    border-top: 10px solid var(--bg);
-    height: 0;
-    position: relative;
+#sidebar {
+	position: absolute;
     top: 0;
-    width: 0; /* Essential for not offsetting the pointer */
+	right: 0;
+    overflow: hidden;
+    width: 250px; 
+    padding-left: 50px;
+    background: white;
+    box-sizing: border-box;
+}
+
+.sidebar-item {
+    margin-bottom: 20px;
+	margin: 4px;
+}
+
+.input-name {
+    color: #999;
+    margin: 0;
+    font-size: 12px;
+}
+
+.input-item {
+    width: 100%;
+    position: relative;
+}
+
+.input-field {
+    font-size: 16px;
+    width: 100%;
+    border: none !important;
+    border-bottom: 2px solid #ddd !important;
+    box-sizing: border-box;
+}
+
+.input-icon {
+    position: absolute;
+    color: #ccc;
+    right: 5px; /* Adjust position as needed */
+    top: 50%;
+    transform: translateY(-50%);
+    font-family: "Font Awesome 6 Free";
+    font-weight: 900; /* Ensure proper icon weight */
+}
+
+.input-menu {
+    display: none;
+	position: fixed;
+	top: 50%;
+	left: 50%;
+	height: 80%;
+	width: 80%;
+	transform: translate(-50%, -50%);
+	background-color: white;
+	border: 2px solid #ccc;
+	padding: 50px;
+	font-size: 16px;
 }
