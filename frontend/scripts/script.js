@@ -8,8 +8,33 @@ const initializeMap = () => {
     return map;
 };
 
+// Create markers and add them to the markers layer
+const createMarkers = (data, markers) => {
+    data.forEach(station => {
+        // Create a custom icon for a station
+        const customIcon = L.divIcon({
+            className: 'station-marker',
+            html: `
+                <div class="station-label">${station.code}</div>
+                <div class="station-pointer"></div>
+            `,
+            iconSize: [0, 0],
+            iconAnchor: [0, 0]
+        });
+
+        // Create marker with custom icon
+        const marker = L.marker([station.latitude, station.longitude], {
+            icon: customIcon
+        });
+
+        marker.stationCode = station.code; // Store station code in marker
+        marker.on('click', () => openPopup(marker)); // Attach click event listener
+        markers.addLayer(marker);
+    });
+};
+
 // Create a marker cluster group with custom styles
-const createMarkerClusterGroup = () => L.markerClusterGroup({
+const createClusters = () => L.markerClusterGroup({
     polygonOptions: {
         fillColor: 'steelblue',
         color: 'steelblue',
@@ -22,38 +47,26 @@ const createMarkerClusterGroup = () => L.markerClusterGroup({
     })
 });
 
-// Create a custom icon for a station
-const createCustomIcon = (station) => L.divIcon({
-    className: 'station-marker',
-    html: `
-        <div class="station-label">${station.code}</div>
-        <div class="station-pointer"></div>
-    `,
-    iconSize: [0, 0],
-    iconAnchor: [0, 0]
-});
-
 // Fetch station data and return it as JSON
-const fetchStationData = async () => {
+const fetchStations = async () => {
     const response = await fetch('/stations');
     return response.json();
 };
 
 // Fetch station-specific data and return it as JSON
-const fetchStationSpecificData = async (stationCode, pollutant = '', matrix = 'samplewater') => {
-    const response = await fetch(`/station-data?code=${stationCode}&pollutant=${encodeURIComponent(pollutant)}&matrix=${encodeURIComponent(matrix)}`);
+const fetchStationData = async (stationCode, pollutant = '', matrix = 'samplewater') => {
+    const response = await fetch(
+        `/station-data?code=${encodeURIComponent(stationCode)}` +
+        `&pollutant=${encodeURIComponent(pollutant)}` +
+        `&matrix=${encodeURIComponent(matrix)}`
+    );
     return response.json();
 };
 
 // Fetch unique pollutants for a specific station
-const fetchUniquePollutants = async (stationCode) => {
-    const response = await fetch(`/unique-pollutants?code=${stationCode}`);
+const fetchUniquePollutants = async (stationCode, matrix) => {
+    const response = await fetch(`/unique-pollutants?code=${stationCode}&matrix=${matrix}`);
     return response.json();
-};
-
-// Populate pollutant input field
-const populatePollutantInput = (pollutant) => {
-    document.getElementById('pollutant-input').value = pollutant;
 };
 
 // Fetch unique matrices for a specific station
@@ -62,9 +75,59 @@ const fetchUniqueMatrices = async (stationCode) => {
     return response.json();
 };
 
-// Populate matrix input field
-const populateMatrixInput = (matrix) => {
-    document.getElementById('matrix-input').value = matrix;
+// Filter options based on input and update dropdown menu
+const filterOptions = (inputElem, list, menuElem) => {
+    const searchText = inputElem.value.toLowerCase();
+    menuElem.innerHTML = '';
+    list.filter(item => item.toLowerCase().includes(searchText)).forEach(filteredItem => {
+        const item = document.createElement('div');
+        item.textContent = filteredItem;
+        item.className = 'query-panel-item-menu-item';
+        // item click handler to fill the input field
+        item.addEventListener('click', async () => {
+            inputElem.value = filteredItem;
+            menuElem.style.display = 'none';
+            // Fetch new data and update plot
+            const stationCode = document.getElementById('title').textContent;
+            const matrix = document.getElementById('matrix-input').value;
+            const pollutant = document.getElementById('pollutant-input').value;
+            await fetchAndPlotStationData(stationCode, pollutant, matrix);
+        });
+        menuElem.appendChild(item);
+    });
+    if (menuElem.childElementCount === 0) {
+        const noResults = document.createElement('div');
+        noResults.textContent = 'No results';
+        noResults.className = 'query-panel-item-menu-item';
+        menuElem.appendChild(noResults);
+    }
+};
+
+// Handle matrix input click
+const handleMatrixInputClick = async () => {
+    const stationCode = document.getElementById('title').textContent;
+    if (!stationCode) return;
+
+    const matrices = await fetchUniqueMatrices(stationCode);
+    const matrixInput = document.getElementById('matrix-input');
+    const matrixMenu = document.getElementById('matrix-menu');
+    filterOptions(matrixInput, matrices, matrixMenu);
+    matrixMenu.style.display = 'block';
+
+};
+
+// Handle pollutant input click
+const handlePollutantInputClick = async () => {
+    const stationCode = document.getElementById('title').textContent;
+    if (!stationCode) return;
+
+    const matrix = document.getElementById('matrix-input').value;
+    const pollutants = await fetchUniquePollutants(stationCode, matrix);
+    const pollutantInput = document.getElementById('pollutant-input');
+    const pollutantMenu = document.getElementById('pollutant-menu');
+    filterOptions(pollutantInput, pollutants, pollutantMenu);
+    pollutantMenu.style.display = 'block';
+
 };
 
 // Populate matrices menu
@@ -74,47 +137,40 @@ const populateMatrixMenu = (matrices) => {
 
     matrices.forEach(matrix => {
         const item = document.createElement('div');
-        item.className = 'matrix-item';
+        item.className = 'query-panel-item-menu-item';
         item.textContent = matrix;
         item.addEventListener('click', () => handleMatrixClick(matrix)); // Attach click event listener
         menu.appendChild(item);
     });
 };
 
-// Handle matrix input click
-const handleMatrixInputClick = async () => {
-    const stationCode = localStorage.getItem('selected_station_code');
-    if (!stationCode) return;
+// Populate pollutants menu
+const populatePollutantMenu = (pollutants) => {
+    const menu = document.getElementById('pollutant-menu');
+    menu.innerHTML = ''; // Clear any existing items
 
-    const matrices = await fetchUniqueMatrices(stationCode);
-    populateMatrixMenu(matrices);
-
-    const menu = document.getElementById('matrix-menu');
-    menu.style.display = 'block';
+    pollutants.forEach(pollutant => {
+        const item = document.createElement('div');
+        item.className = 'query-panel-item-menu-item';
+        item.textContent = pollutant;
+        item.addEventListener('click', () => handlePollutantClick(pollutant)); // Attach click event listener
+        menu.appendChild(item);
+    });
 };
+
 
 // Handle matrix item click
 const handleMatrixClick = async (matrix) => {
-    const stationCode = localStorage.getItem('selected_station_code');
+    const stationCode = document.getElementById('title').textContent;
 
-    populateMatrixInput(matrix);
+    document.getElementById('matrix-input').value = matrix;
     const pollutant = document.getElementById('pollutant-input').value;
-    await fetchAndPlotStationData(stationCode, pollutant, matrix);
+    if (pollutant) {
+        await fetchAndPlotStationData(stationCode, pollutant, matrix);
+    }
 
     const menu = document.getElementById('matrix-menu');
     menu.style.display = 'none';
-};
-
-// Create markers and add them to the markers layer
-const createMarkers = (data, markers) => {
-    data.forEach(station => {
-        const marker = L.marker([station.latitude, station.longitude], {
-            icon: createCustomIcon(station)
-        });
-        marker.stationCode = station.code; // Store station code in marker
-        marker.on('click', () => openPopup(marker)); // Attach click event listener
-        markers.addLayer(marker);
-    });
 };
 
 // Clear and setup the popup content
@@ -200,9 +256,9 @@ const openPopup = async (marker) => {
 
     // Populate matrix input field with the initial value "samplewater"
     const matrix = 'samplewater';
-    populateMatrixInput(matrix);
+    document.getElementById('matrix-input').value = matrix;
 
-    const data = await fetchStationSpecificData(stationCode, '', matrix);
+    const data = await fetchStationData(stationCode, '', matrix);
     if (!data || data.length === 0) {
         // Handle case where there is no data
         plotData([], [], "No Data Available");
@@ -210,7 +266,7 @@ const openPopup = async (marker) => {
     }
 
     const mostNumerousPollutant = data[0].pollutant;
-    populatePollutantInput(mostNumerousPollutant);
+    document.getElementById('pollutant-input').value = mostNumerousPollutant;
 
     const dates = data.map(item => new Date(`${item.date}T${item.time}`));
     const results = data.map(item => item.result);
@@ -218,13 +274,13 @@ const openPopup = async (marker) => {
 
     plotData(dates, results, yAxisTitle);
 
-    const uniquePollutants = await fetchUniquePollutants(stationCode);
+    const uniquePollutants = await fetchUniquePollutants(stationCode, matrix);
     populatePollutantMenu(uniquePollutants);
 };
 
 // Fetch and plot station data
 const fetchAndPlotStationData = async (stationCode, pollutant, matrix) => {
-    const data = await fetchStationSpecificData(stationCode, pollutant, matrix);
+    const data = await fetchStationData(stationCode, pollutant, matrix);
     if (!data || data.length === 0) {
         plotData([], [], "No Data Available");
         return;
@@ -249,39 +305,15 @@ const setupCloseButton = () => {
     closeButton.addEventListener('click', closePopup);
 };
 
-// Populate pollutants menu
-const populatePollutantMenu = (pollutants) => {
-    const menu = document.getElementById('pollutant-menu');
-    menu.innerHTML = ''; // Clear any existing items
-
-    pollutants.forEach(pollutant => {
-        const item = document.createElement('div');
-        item.className = 'pollutant-item';
-        item.textContent = pollutant;
-        item.addEventListener('click', () => handlePollutantClick(pollutant)); // Attach click event listener
-        menu.appendChild(item);
-    });
-};
-
-// Handle pollutant input click
-const handlePollutantInputClick = async () => {
-    const stationCode = localStorage.getItem('selected_station_code');
-    if (!stationCode) return;
-
-    const pollutants = await fetchUniquePollutants(stationCode);
-    populatePollutantMenu(pollutants);
-
-    const menu = document.getElementById('pollutant-menu');
-    menu.style.display = 'block';
-};
-
 // Handle pollutant item click
 const handlePollutantClick = async (pollutant) => {
-    const stationCode = localStorage.getItem('selected_station_code');
+    const stationCode = document.getElementById('title').textContent;
 
-    populatePollutantInput(pollutant);
+    document.getElementById('pollutant-input').value = pollutant;
     const matrix = document.getElementById('matrix-input').value;
-    await fetchAndPlotStationData(stationCode, pollutant, matrix);
+    if (matrix) {
+        await fetchAndPlotStationData(stationCode, pollutant, matrix);
+    }
 
     const menu = document.getElementById('pollutant-menu');
     menu.style.display = 'none';
@@ -308,10 +340,10 @@ document.addEventListener('click', (event) => {
 // Main initialization function
 const init = async () => {
     const map = initializeMap();
-    const markers = createMarkerClusterGroup();
+    const markers = createClusters();
     map.on('click', closePopup);
 
-    const data = await fetchStationData();
+    const data = await fetchStations();
     createMarkers(data, markers);
 
     map.addLayer(markers);
@@ -320,10 +352,18 @@ const init = async () => {
     // Add event listener to pollutant-input element
     const pollutantInput = document.getElementById('pollutant-input');
     pollutantInput.addEventListener('click', handlePollutantInputClick);
+    pollutantInput.addEventListener('input', () => filterOptions(pollutantInput, pollutants, pollutantMenu));
 
     // Add event listener to matrix-input element
     const matrixInput = document.getElementById('matrix-input');
     matrixInput.addEventListener('click', handleMatrixInputClick);
+    matrixInput.addEventListener('input', () => filterOptions(matrixInput, matrices, matrixMenu));
+
+    document.querySelectorAll('.query-panel-item-input').forEach(inputElement => {
+        inputElement.addEventListener('focus', function() {
+            this.value = '';
+        });
+    });
 };
 
 // Run the initialization

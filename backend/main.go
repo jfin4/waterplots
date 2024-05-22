@@ -34,6 +34,11 @@ func main() {
     http.HandleFunc("/unique-pollutants", uniquePollutantsHandler)
     http.HandleFunc("/unique-matrices", uniqueMatricesHandler)
     log.Fatal(http.ListenAndServe("localhost:8080", nil))
+    // log.Fatal(http.ListenAndServeTLS(":443",
+    // "/etc/letsencrypt/live/waterplots.com/fullchain.pem",
+    // "/etc/letsencrypt/live/waterplots.com/privkey.pem",
+    // nil))
+
 }
 
 func stationsHandler(w http.ResponseWriter, r *http.Request) {
@@ -170,7 +175,12 @@ func uniquePollutantsHandler(w http.ResponseWriter, r *http.Request) {
         http.Error(w, "Missing station code", http.StatusBadRequest)
         return
     }
-    pollutants, err := fetchUniquePollutants(code)
+    matrix := r.URL.Query().Get("matrix")
+    if matrix == "" {
+        http.Error(w, "Missing matrix", http.StatusBadRequest)
+        return
+    }
+    pollutants, err := fetchUniquePollutants(code, matrix)
     if err != nil {
         http.Error(w, err.Error(), http.StatusInternalServerError)
         return
@@ -182,6 +192,33 @@ func uniquePollutantsHandler(w http.ResponseWriter, r *http.Request) {
     }
     w.Header().Set("Content-Type", "application/json")
     w.Write(jsonResponse)
+}
+
+// fetchUniquePollutants function to get unique pollutants for a given station code
+func fetchUniquePollutants(code, matrix string) ([]string, error) {
+    db, err := sql.Open("sqlite3", "data/water_quality.db")
+    if err != nil {
+        return nil, err
+    }
+    defer db.Close()
+
+    query := `SELECT DISTINCT pollutant FROM results WHERE code = ? AND matrix = ?`
+    rows, err := db.Query(query, code, matrix)
+    if err != nil {
+        return nil, err
+    }
+    defer rows.Close()
+
+    var pollutants []string
+    for rows.Next() {
+        var pollutant string
+        err = rows.Scan(&pollutant)
+        if err != nil {
+            return nil, err
+        }
+        pollutants = append(pollutants, pollutant)
+    }
+    return pollutants, nil
 }
 
 // uniqueMatricesHandler function to handle requests for unique matrices
@@ -205,32 +242,6 @@ func uniqueMatricesHandler(w http.ResponseWriter, r *http.Request) {
     w.Write(jsonResponse)
 }
 
-// fetchUniquePollutants function to get unique pollutants for a given station code
-func fetchUniquePollutants(code string) ([]string, error) {
-    db, err := sql.Open("sqlite3", "data/water_quality.db")
-    if err != nil {
-        return nil, err
-    }
-    defer db.Close()
-
-    query := `SELECT DISTINCT pollutant FROM results WHERE code = ? ORDER BY pollutant ASC`
-    rows, err := db.Query(query, code)
-    if err != nil {
-        return nil, err
-    }
-    defer rows.Close()
-
-    var pollutants []string
-    for rows.Next() {
-        var pollutant string
-        err = rows.Scan(&pollutant)
-        if err != nil {
-            return nil, err
-        }
-        pollutants = append(pollutants, pollutant)
-    }
-    return pollutants, nil
-}
 
 // fetchUniqueMatrices function to get unique matrix values for a given station code
 func fetchUniqueMatrices(code string) ([]string, error) {
