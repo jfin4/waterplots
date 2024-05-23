@@ -54,24 +54,8 @@ const fetchStations = async () => {
 };
 
 // Fetch station-specific data and return it as JSON
-const fetchStationData = async (stationCode, pollutant = '', matrix = 'samplewater') => {
-    const response = await fetch(
-        `/station-data?code=${encodeURIComponent(stationCode)}` +
-        `&pollutant=${encodeURIComponent(pollutant)}` +
-        `&matrix=${encodeURIComponent(matrix)}`
-    );
-    return response.json();
-};
-
-// Fetch unique pollutants for a specific station
-const fetchUniquePollutants = async (stationCode, matrix) => {
-    const response = await fetch(`/unique-pollutants?code=${stationCode}&matrix=${matrix}`);
-    return response.json();
-};
-
-// Fetch unique matrices for a specific station
-const fetchUniqueMatrices = async (stationCode) => {
-    const response = await fetch(`/unique-matrices?code=${stationCode}`);
+const fetchStationData = async (stationCode) => {
+    const response = await fetch(`/station-data?code=${encodeURIComponent(stationCode)}`);
     return response.json();
 };
 
@@ -89,9 +73,8 @@ const filterOptions = (inputElem, list, menuElem) => {
             menuElem.style.display = 'none';
             // Fetch new data and update plot
             const stationCode = document.getElementById('title').textContent;
-            const matrix = document.getElementById('matrix-input').value;
             const pollutant = document.getElementById('pollutant-input').value;
-            await fetchAndPlotStationData(stationCode, pollutant, matrix);
+            await fetchAndPlotStationData(stationCode, pollutant)
         });
         menuElem.appendChild(item);
     });
@@ -103,45 +86,20 @@ const filterOptions = (inputElem, list, menuElem) => {
     }
 };
 
-// Handle matrix input click
-const handleMatrixInputClick = async () => {
-    const stationCode = document.getElementById('title').textContent;
-    if (!stationCode) return;
-
-    const matrices = await fetchUniqueMatrices(stationCode);
-    const matrixInput = document.getElementById('matrix-input');
-    const matrixMenu = document.getElementById('matrix-menu');
-    filterOptions(matrixInput, matrices, matrixMenu);
-    matrixMenu.style.display = 'block';
-
-};
-
 // Handle pollutant input click
 const handlePollutantInputClick = async () => {
     const stationCode = document.getElementById('title').textContent;
     if (!stationCode) return;
 
-    const matrix = document.getElementById('matrix-input').value;
-    const pollutants = await fetchUniquePollutants(stationCode, matrix);
+    const stationData = JSON.parse(localStorage.getItem(`station_data_${stationCode}`));
+    if (!stationData) return;
+
+    const uniquePollutants = [...new Set(stationData.map(item => item.pollutant))];
     const pollutantInput = document.getElementById('pollutant-input');
     const pollutantMenu = document.getElementById('pollutant-menu');
-    filterOptions(pollutantInput, pollutants, pollutantMenu);
+
+    filterOptions(pollutantInput, uniquePollutants, pollutantMenu);
     pollutantMenu.style.display = 'block';
-
-};
-
-// Populate matrices menu
-const populateMatrixMenu = (matrices) => {
-    const menu = document.getElementById('matrix-menu');
-    menu.innerHTML = ''; // Clear any existing items
-
-    matrices.forEach(matrix => {
-        const item = document.createElement('div');
-        item.className = 'query-panel-item-menu-item';
-        item.textContent = matrix;
-        item.addEventListener('click', () => handleMatrixClick(matrix)); // Attach click event listener
-        menu.appendChild(item);
-    });
 };
 
 // Populate pollutants menu
@@ -156,21 +114,6 @@ const populatePollutantMenu = (pollutants) => {
         item.addEventListener('click', () => handlePollutantClick(pollutant)); // Attach click event listener
         menu.appendChild(item);
     });
-};
-
-
-// Handle matrix item click
-const handleMatrixClick = async (matrix) => {
-    const stationCode = document.getElementById('title').textContent;
-
-    document.getElementById('matrix-input').value = matrix;
-    const pollutant = document.getElementById('pollutant-input').value;
-    if (pollutant) {
-        await fetchAndPlotStationData(stationCode, pollutant, matrix);
-    }
-
-    const menu = document.getElementById('matrix-menu');
-    menu.style.display = 'none';
 };
 
 // Clear and setup the popup content
@@ -218,7 +161,7 @@ const plotData = (dates, results, yAxisTitle) => {
             gridcolor: 'white',
             zerolinecolor: 'white',
             zerolinewidth: 5,
-            rangemode: 'tozero'
+            // rangemode: 'tozero'
         },
         margin: {
             l: 50,
@@ -249,54 +192,61 @@ const plotData = (dates, results, yAxisTitle) => {
 
 // Open popup and load Plotly chart in a div
 const openPopup = async (marker) => {
+    document.getElementById('mapid').style.filter = 'brightness(50%)';
+
     setupPopupContent(marker.stationCode);
 
     const stationCode = marker.stationCode;
     localStorage.setItem('selected_station_code', stationCode);
 
-    // Populate matrix input field with the initial value "samplewater"
-    const matrix = 'samplewater';
-    document.getElementById('matrix-input').value = matrix;
-
-    const data = await fetchStationData(stationCode, '', matrix);
+    const data = await fetchStationData(stationCode);
     if (!data || data.length === 0) {
-        // Handle case where there is no data
         plotData([], [], "No Data Available");
         return;
     }
 
-    const mostNumerousPollutant = data[0].pollutant;
-    document.getElementById('pollutant-input').value = mostNumerousPollutant;
+    localStorage.setItem(`station_data_${stationCode}`, JSON.stringify(data));
 
-    const dates = data.map(item => new Date(`${item.date}T${item.time}`));
-    const results = data.map(item => item.result);
-    const yAxisTitle = `${data[0].unit}`;
+    const mostNumerousPollutant = data.reduce((acc, curr) => (
+        (acc[curr.pollutant] = acc[curr.pollutant] ? acc[curr.pollutant]+1 : 1, acc)
+    ), {});
+    const topPollutant = Object.keys(mostNumerousPollutant).reduce((a, b) => mostNumerousPollutant[a] > mostNumerousPollutant[b] ? a : b);
+    document.getElementById('pollutant-input').value = topPollutant;
+
+    filterAndPlotData(data, topPollutant);
+};
+
+// filter and plot data
+const filterAndPlotData = (data, pollutant) => {
+    const filteredData = data.filter(item => item.pollutant === pollutant);
+    if (!filteredData.length) {
+        plotData([], [], "No Data Available");
+        return;
+    }
+
+    const dates = filteredData.map(item => new Date(`${item.date}T${item.time}`));
+    const results = filteredData.map(item => item.result);
+    const yAxisTitle = `${filteredData[0].unit}`;
 
     plotData(dates, results, yAxisTitle);
-
-    const uniquePollutants = await fetchUniquePollutants(stationCode, matrix);
-    populatePollutantMenu(uniquePollutants);
 };
 
 // Fetch and plot station data
-const fetchAndPlotStationData = async (stationCode, pollutant, matrix) => {
-    const data = await fetchStationData(stationCode, pollutant, matrix);
+const fetchAndPlotStationData = async (stationCode, pollutant) => {
+    const data = await fetchStationData(stationCode);
     if (!data || data.length === 0) {
         plotData([], [], "No Data Available");
         return;
     }
 
-    const dates = data.map(item => new Date(`${item.date}T${item.time}`));
-    const results = data.map(item => item.result);
-    const yAxisTitle = `${data[0].unit}`;
-
-    plotData(dates, results, yAxisTitle);
+    filterAndPlotData(data, pollutant);
 };
 
 // Close popup (div)
 const closePopup = () => {
     const popup = document.getElementById('popup');
     popup.style.display = 'none';
+    document.getElementById('mapid').style.filter = 'brightness(100%)'
 };
 
 // Setup the close button
@@ -308,16 +258,20 @@ const setupCloseButton = () => {
 // Handle pollutant item click
 const handlePollutantClick = async (pollutant) => {
     const stationCode = document.getElementById('title').textContent;
+    const data = JSON.parse(localStorage.getItem(`station_data_${stationCode}`));
+    if (!data) return;
 
     document.getElementById('pollutant-input').value = pollutant;
-    const matrix = document.getElementById('matrix-input').value;
-    if (matrix) {
-        await fetchAndPlotStationData(stationCode, pollutant, matrix);
-    }
+    filterAndPlotData(data, pollutant);
 
-    const menu = document.getElementById('pollutant-menu');
-    menu.style.display = 'none';
+    document.getElementById('pollutant-menu').style.display = 'none';
 };
+
+document.querySelector('.query-panel-item-menu').addEventListener('click', (event) => {
+    if (event.target && event.target.classList.contains('query-panel-item-menu-item')) {
+        handlePollutantClick(event.target.textContent);
+    }
+});
 
 // Close the pollutant menu when clicking outside of it
 document.addEventListener('click', (event) => {
@@ -328,44 +282,43 @@ document.addEventListener('click', (event) => {
     }
 });
 
-// Close the matrix menu when clicking outside of it
-document.addEventListener('click', (event) => {
-    const menu = document.getElementById('matrix-menu');
-    const input = document.getElementById('matrix-input');
-    if (menu && !menu.contains(event.target) && input && !input.contains(event.target)) {
-        menu.style.display = 'none';
-    }
-});
-
 // Main initialization function
 const init = async () => {
     const map = initializeMap();
-    const markers = createClusters();
     map.on('click', closePopup);
 
+    const markers = createClusters();
     const data = await fetchStations();
     createMarkers(data, markers);
-
     map.addLayer(markers);
+
     setupCloseButton(); // Call setupCloseButton to ensure the close button works
 
     // Add event listener to pollutant-input element
     const pollutantInput = document.getElementById('pollutant-input');
     pollutantInput.addEventListener('click', handlePollutantInputClick);
-    pollutantInput.addEventListener('input', () => filterOptions(pollutantInput, pollutants, pollutantMenu));
 
-    // Add event listener to matrix-input element
-    const matrixInput = document.getElementById('matrix-input');
-    matrixInput.addEventListener('click', handleMatrixInputClick);
-    matrixInput.addEventListener('input', () => filterOptions(matrixInput, matrices, matrixMenu));
-
-    document.querySelectorAll('.query-panel-item-input').forEach(inputElement => {
-        inputElement.addEventListener('focus', function() {
-            this.value = '';
-        });
+    // Moved outside the event listener callback and to the end of the fetchStations promise
+    const pollutants = []; // Declare the pollutants array here
+    pollutantInput.addEventListener('input', () => {
+        const stationCode = document.getElementById('title').textContent;
+        const data = JSON.parse(localStorage.getItem(`station_data_${stationCode}`));
+        if (!data) return;
+        const uniquePollutants = [...new Set(data.map(item => item.pollutant))];
+        filterOptions(pollutantInput, uniquePollutants, document.getElementById('pollutant-menu'));
     });
 };
 
 // Run the initialization
 init();
+
+// filter pollutants
+document.getElementById('pollutant-input').addEventListener('input', (event) => {
+    const stationCode = document.getElementById('title').textContent;
+    const data = JSON.parse(localStorage.getItem(`station_data_${stationCode}`));
+    if (!data) return;
+    const uniquePollutants = [...new Set(data.map(item => item.pollutant))];
+    filterOptions(event.target, uniquePollutants, document.getElementById('pollutant-menu'));
+});
+
 
