@@ -20,6 +20,42 @@ con <- dbConnect(SQLite(), dbname = "./data/water_quality_all.db")
 .data <- read_tsv("./data/ceden-data-2024-04-12.tsv", 
                   col_types = cols(.default = "c"))
 
+# check for nonprintable characters
+check_non_printable_chars_df <- function(df) {
+  non_printable_chars_report <- list()
+
+  for (i in seq_len(nrow(df))) {
+    line <- paste(df[i, ], collapse = " ")
+    non_printable_chars <- unlist(strsplit(line, NULL))
+    non_printable_chars <- non_printable_chars[sapply(non_printable_chars, function(char) {
+      char_code <- utf8ToInt(char)
+      (char_code < 32 && !(char_code %in% c(9, 10, 13))) || char_code == 127
+    })]
+
+    if (length(non_printable_chars) > 0) {
+      non_printable_chars_report[[paste("Row", i)]] <- paste(non_printable_chars, collapse = "")
+    }
+  }
+
+  if (length(non_printable_chars_report) > 0) {
+    for (entry in names(non_printable_chars_report)) {
+      cat(sprintf("%s: %s\n", entry, repr::repr(non_printable_chars_report[[entry]])))
+    }
+  } else {
+    cat("No non-printable characters found.\n")
+  }
+}
+
+# Example dataframe
+df <- data.frame(
+  column1 = c("This is a test", "This line has a \001 non-printable char"),
+  column2 = c("Another \007 test", "All good here"),
+  stringsAsFactors = FALSE
+)
+
+# Call the function with the dataframe
+check_non_printable_chars_df(.data)
+
 # manage stations table ------------------------------------------------------
 # identify stations
 stations <- 
