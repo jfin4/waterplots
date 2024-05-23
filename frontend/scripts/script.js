@@ -307,18 +307,19 @@ const init = async () => {
         const uniquePollutants = [...new Set(data.map(item => item.pollutant))];
         filterOptions(pollutantInput, uniquePollutants, document.getElementById('pollutant-menu'));
     });
+    
+    // filter pollutants
+    document.getElementById('pollutant-input').addEventListener('input', (event) => {
+        const stationCode = document.getElementById('title').textContent;
+        const data = JSON.parse(localStorage.getItem(`station_data_${stationCode}`));
+        if (!data) return;
+        const uniquePollutants = [...new Set(data.map(item => item.pollutant))];
+        filterOptions(event.target, uniquePollutants, document.getElementById('pollutant-menu'));
+    });
 };
 
 // Run the initialization
 init();
 
-// filter pollutants
-document.getElementById('pollutant-input').addEventListener('input', (event) => {
-    const stationCode = document.getElementById('title').textContent;
-    const data = JSON.parse(localStorage.getItem(`station_data_${stationCode}`));
-    if (!data) return;
-    const uniquePollutants = [...new Set(data.map(item => item.pollutant))];
-    filterOptions(event.target, uniquePollutants, document.getElementById('pollutant-menu'));
-});
 
 
