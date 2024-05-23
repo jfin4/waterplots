@@ -307,6 +307,12 @@ const init = async () => {
         const uniquePollutants = [...new Set(data.map(item => item.pollutant))];
         filterOptions(pollutantInput, uniquePollutants, document.getElementById('pollutant-menu'));
     });
+
+    document.querySelectorAll('.query-panel-item-input').forEach(inputElement => {
+        inputElement.addEventListener('focus', function() {
+            this.value = '';
+        });
+    });
     
     // filter pollutants
     document.getElementById('pollutant-input').addEventListener('input', (event) => {
@@ -316,10 +322,9 @@ const init = async () => {
         const uniquePollutants = [...new Set(data.map(item => item.pollutant))];
         filterOptions(event.target, uniquePollutants, document.getElementById('pollutant-menu'));
     });
+
 };
 
 // Run the initialization
 init();
-
-
 
