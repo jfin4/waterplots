@@ -1,4 +1,3 @@
-
 package main
 
 import (
@@ -32,12 +31,7 @@ func main() {
     http.Handle("/", http.FileServer(http.Dir("frontend")))
     http.HandleFunc("/stations", stationsHandler)
     http.HandleFunc("/station-data", stationDataHandler)
-    log.Fatal(http.ListenAndServe("0.0.0.0:8080", nil))
-    // log.Fatal(http.ListenAndServeTLS(":443",
-    // "/etc/letsencrypt/live/waterplots.com/fullchain.pem",
-    // "/etc/letsencrypt/live/waterplots.com/privkey.pem",
-    // nil))
-
+    log.Fatal(http.ListenAndServe("localhost:8080", nil))
 }
 
 func stationsHandler(w http.ResponseWriter, r *http.Request) {
