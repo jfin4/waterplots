@@ -1,24 +1,21 @@
 # initial setup --------------------------------------------------------------
-packages <- c('tidyverse',
-              'forecast',
-              'RSQLite',
-              'nlme',
-              'hms')
-for (package in packages) {
-  if (!require(package, character.only = TRUE)) {
-    install.packages(package, repos = "https://cloud.r-project.org/")
-    require(package)
-  }
-}
+library("tidyverse")
+library("lubridate")
+library("hms")
+library("fs")
+library("readxl")
+library("writexl")
+library("RSQLite")
+library("parallel")
+library("data.table")
 
 rm(list = ls())
 
 # connect to database
-con <- dbConnect(SQLite(), dbname = "./data/water_quality_all.db")
+con <- dbConnect(SQLite(), dbname = "data.db")
 
-# load data
-.data <- read_tsv("./data/ceden-data-2024-04-12.tsv", 
-                  col_types = cols(.default = "c"))
+# Often fastest for your workflow
+.data <- fread("./ceden-2025-05-30.tsv", nThread = getDTthreads())
 
 # check for nonprintable characters
 check_non_printable_chars_df <- function(df) {
@@ -46,27 +43,20 @@ check_non_printable_chars_df <- function(df) {
   }
 }
 
-# Example dataframe
-df <- data.frame(
-  column1 = c("This is a test", "This line has a \001 non-printable char"),
-  column2 = c("Another \007 test", "All good here"),
-  stringsAsFactors = FALSE
-)
-
 # Call the function with the dataframe
 check_non_printable_chars_df(.data)
 
 # manage stations table ------------------------------------------------------
 # identify stations
 stations <- 
-  .data %>% 
-  select(code = StationCode, 
-         latitude = TargetLatitude,
-         longitude = TargetLongitude) %>% 
-  mutate(across(c(longitude, latitude), as.numeric)) %>% 
-  filter(across(everything(), \(x) !is.na(x))) %>% 
-  distinct()  %>%
-  identity()
+    .data[,
+          # select and rename columns, convert to numeric
+          .(code = StationCode,
+            latitude = as.numeric(TargetLatitude),
+            longitude = as.numeric(TargetLongitude))
+          ]
+stations <- stations[complete.cases(stations)]
+stations <- unique(stations)
 
 # create table
 query <- "
@@ -91,23 +81,21 @@ dbExecute(con, query, params = list(stations$code,
 
 # mangage results table ------------------------------------------------------
 # identify results -----------------------------------------------------------
+
 results <- 
-  .data %>% 
-  select(matrix = MatrixName,
-         project = ParentProject,
-         code = StationCode, 
-         pollutant = Analyte,
-         date = SampleDate,
-         time = CollectionTime,
-         result = Result,
-         unit = Unit) %>%
-  # filter(code == "304-LEONA-21") %>% 
-  filter(across(everything(), \(x) !is.na(x))) %>% 
-  mutate(result = as.numeric(result),
-         date = as.character(as_date(mdy_hms(date))),
-         time = as.character(as_hms(mdy_hms(time)))) %>% 
-  distinct()  %>%
-  identity()
+    .data[,
+          # select and rename columns, convert to numeric
+          .(matrix = MatrixName,
+            project = ParentProject,
+            code = StationCode, 
+            pollutant = Analyte,
+            date = as.character(as_date(mdy_hms(SampleDate))),
+            time = as.character(as_hms(mdy_hms(CollectionTime))),
+            result = as.numeric(Result),
+            unit = Unit)
+          ]
+results <- results[complete.cases(results)]
+results <- unique(results)
 
 # create table
 query <- "
@@ -159,7 +147,3 @@ dbExecute(con, query, params = list(results$matrix,
 
 # clean up -------------------------------------------------------------------
 dbDisconnect(con)
-
-foo <- dbGetQuery(con, "SELECT * FROM results")
-# as_tibble(foo)
-dbExecute(con, "DROP TABLE results")

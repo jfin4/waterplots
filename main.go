@@ -32,7 +32,7 @@ func main() {
     http.Handle("/", http.FileServer(http.Dir("frontend")))
     http.HandleFunc("/stations", stationsHandler)
     http.HandleFunc("/station-data", stationDataHandler)
-    log.Fatal(http.ListenAndServe("localhost:8080", nil))
+    log.Fatal(http.ListenAndServe("0.0.0.0:8080", nil))
     // log.Fatal(http.ListenAndServeTLS(":443",
     // "/etc/letsencrypt/live/waterplots.com/fullchain.pem",
     // "/etc/letsencrypt/live/waterplots.com/privkey.pem",
@@ -56,7 +56,7 @@ func stationsHandler(w http.ResponseWriter, r *http.Request) {
 }
 
 func fetchStations() ([]Station, error) {
-    db, err := sql.Open("sqlite3", "data/water_quality.db")
+    db, err := sql.Open("sqlite3", "data/data.db")
     if err != nil {
         return nil, err
     }
@@ -74,15 +74,14 @@ func fetchStations() ([]Station, error) {
         var s Station
         err = rows.Scan(&s.Code, &s.Latitude, &s.Longitude)
         if err != nil {
-            return nil, err
-        }
+            return nil, err }
         stations = append(stations, s)
     }
     return stations, nil
 }
 
 func fetchStationData(code string) ([]StationData, error) {
-    db, err := sql.Open("sqlite3", "data/water_quality.db")
+    db, err := sql.Open("sqlite3", "data/data.db")
     if err != nil {
         return nil, err
     }
