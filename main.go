@@ -5,6 +5,7 @@ import (
     "encoding/json"
     "log"
     "net/http"
+	"fmt"
 
     _ "github.com/mattn/go-sqlite3"
 )
@@ -28,6 +29,7 @@ type StationData struct {
 }
 
 func main() {
+	fmt.Println("Hello, world!")
     http.Handle("/", http.FileServer(http.Dir("frontend")))
     http.HandleFunc("/stations", stationsHandler)
     http.HandleFunc("/station-data", stationDataHandler)
