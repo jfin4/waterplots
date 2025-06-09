@@ -1,7 +1,4 @@
+*.csv
 *.tsv
 *.db
-nohup.out
-go.mod
 go.sum
-server
-/notes
