@@ -29,7 +29,7 @@ type StationData struct {
 }
 
 func main() {
-	fmt.Println("Hello, world!")
+	fmt.Println("Serving HTTP on 0.0.0.0 port 8000 (http://0.0.0.0:8000/) ...")
     http.Handle("/", http.FileServer(http.Dir("frontend")))
     http.HandleFunc("/stations", stationsHandler)
     http.HandleFunc("/station-data", stationDataHandler)
